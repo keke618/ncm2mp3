@@ -28,6 +28,16 @@
 | :---: | :---: |
 | <img src="docs/py.png" width="360" /> | <img src="docs/android.jpg" width="270" /> |
 
+## 下载
+
+| 文件 | 平台 | 大小 | 说明 |
+| :--- | :--- | :--- | :--- |
+| [NCM2MP3-C.exe](../../releases/download/v1.1.0/NCM2MP3-C.exe) | Windows | 0.3 MB | 原生 Win32，无依赖，推荐 |
+| [NCM2MP3-Python.exe](../../releases/download/v1.1.0/NCM2MP3-Python.exe) | Windows | 15.9 MB | Python 打包，功能相同 |
+| [NCM2MP3-Android.apk](../../releases/download/v1.1.0/NCM2MP3-Android.apk) | Android 7.0+ | 0.13 MB | 支持全盘扫描 |
+
+<sub>全部版本见 [Releases](../../releases) · 程序未签名，首次运行如遇 SmartScreen 请点「更多信息 → 仍要运行」</sub>
+
 ## 三个版本怎么选
 
 | | Python 版 | C 版 | Android 版 |
