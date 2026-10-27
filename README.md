@@ -3,7 +3,7 @@
 
   # NCM 转 MP3
 
-  **网易云音乐加密格式解密工具** · 图形界面 · 拖拽即用
+  **网易云音乐加密格式解密** · Windows + Android · 全程本地处理
 
   <a href="../../releases/latest"><strong>下载程序</strong></a>
   ·
@@ -11,43 +11,46 @@
   ·
   <a href="c/ncm2mp3_gui.c">C 源码</a>
   ·
+  <a href="android/src/com/keke/ncm2mp3/MainActivity.java">Android 源码</a>
+  ·
   <a href="docs/原理说明.md">原理说明</a>
 </div>
 
 <br />
 
-把网易云音乐的 `.ncm` 文件还原成普通 `.mp3` / `.flac`。本地解密，不联网，不上传。
+把网易云音乐的 `.ncm` 文件还原成普通 `.mp3` / `.flac`，支持 Windows 桌面和 Android 手机。
 
-提供 **Python 版** 和 **C 版** 两个实现，功能一致，输出结果逐字节相同。
-
-解密过程由ds-flash4.1 ai推导而来 c版本由ai版本转换而来 有bug及时反馈我来修复
+提供三种实现，解密算法完全一致，**输出文件逐字节相同**。
 
 ## 界面
 
-| Python 版 | C 版 |
+| Windows | Android |
 | :---: | :---: |
-| ![Python](docs/py.png) | ![C](docs/c.png) |
+| <img src="docs/py.png" width="360" /> | <img src="docs/android.jpg" width="270" /> |
 
-## 两个版本怎么选
+## 三个版本怎么选
 
-| | Python 版 | C 版 |
-| :--- | :--- | :--- |
-| 体积 | 15.9 MB | **0.3 MB** |
-| 界面 | 图形界面 | 图形界面 |
-| 拖拽 | 拖进窗口 | 拖进窗口 |
-| 批量 | 支持 | 支持 |
-| 依赖 | 打包了 Python 运行时 | 无（只用系统 API） |
-| 启动速度 | 较慢（要解压） | 快 |
+| | Python 版 | C 版 | Android 版 |
+| :--- | :--- | :--- | :--- |
+| 平台 | Windows | Windows | Android 7.0+ |
+| 体积 | 15.9 MB | **0.3 MB** | **0.13 MB** |
+| 界面 | 图形界面 | 图形界面 | 手机界面 |
+| 拖拽 | 拖进窗口 | 拖进窗口 | 拖入不适用 |
+| 批量 | 支持 | 支持 | 支持 |
+| 扫描文件 | 手动添加 | 手动添加 | **全盘扫描** |
+| 依赖 | 打包 Python 运行时 | 无 | 无 |
+
+Windows 端两个版本功能完全一样，只是体积和依赖不同。
 
 ## 功能
 
-- **拖拽即用**：文件或文件夹直接拖进窗口
 - **批量转换**：一次处理几十上百个，带进度条
 - **两种输出**：原地生成，或导出到指定文件夹
 - **可选删除源文件**：转换成功后自动清理 `.ncm`
 - **无损还原**：直接还原原始音频字节，不重编码
+- **手机端**：一键扫描全盘 `.ncm`，不用手动找目录
 
-## 使用方法
+## Windows 使用方法
 
 ### 方案一：直接拖到程序图标上
 
@@ -82,6 +85,32 @@
 
 点「开始转换」，进度条走完后弹出结果。列表中每个文件后面会标 ✓ 或 ✗。
 
+## Android 使用方法
+
+**第一步：安装**
+
+把 `NCM2MP3-Android.apk` 传到手机，点开安装。提示「未知来源」时选择允许。
+
+**第二步：授予权限**（首次扫描时）
+
+点「扫描手机里的 NCM」，会跳到系统设置。
+打开「允许访问所有文件」开关，返回程序后自动开始扫描。
+
+> 不授权也能用：点「或选择指定文件夹」，用系统的文件夹选择器挑一个目录。
+
+**第三步：确认文件列表**
+
+扫描完成后会列出找到的所有 `.ncm`，每行显示文件名和所在目录。
+
+**第四步：选择输出位置**
+
+- **原地生成**：mp3 写在 ncm 同一个文件夹
+- **导出到其他文件夹**：点按钮另选目标目录
+
+**第五步：开始转换**
+
+点「开始转换」，进度条走完，每行右侧显示 ✓ 或 ✗。
+
 ## 原理
 
 `.ncm` 的结构是「固定魔数 + AES 加密的 RC4 密钥 + 变形 RC4 加密的音频」：
@@ -96,19 +125,23 @@ CTENFDAM | 密钥(AES-128-ECB) | 元数据 | CRC | 封面图 | 音频(异或流)
 
 ```
 ncm2mp3/
-├── py/                     Python 版
+├── py/                     Windows · Python 版
 │   ├── ncm_gui.py          图形界面
 │   ├── ncm_core.py         解密核心
 │   ├── ncm2mp3-cli.py      命令行版
-│   ├── make_icon.py        图标生成
 │   └── build.bat           打包脚本
-├── c/                      C 版
+├── c/                      Windows · C 版
 │   ├── ncm2mp3_gui.c       Win32 图形界面
 │   ├── ncm2mp3.c           命令行版
 │   ├── ncm2mp3_gui.rc      图标资源
 │   └── build-c.bat         编译脚本
+├── android/                Android 版
+│   ├── src/.../MainActivity.java
+│   ├── AndroidManifest.xml
+│   ├── res/                图标与字符串
+│   └── build_apk.ps1       打包脚本
 ├── docs/                   截图与原理说明
-├── icon.ico                程序图标
+├── icon.ico / icon.png     程序图标
 └── dist/                   编译产物
 ```
 
@@ -122,19 +155,17 @@ pyinstaller --onefile --windowed --name NCM转MP3 \
   --icon icon.ico --collect-all tkinterdnd2 py/ncm_gui.py
 ```
 
-**C 版**
-
-需要 Visual Studio 2022（含 C++ 桌面开发）：
+**C 版**（需要 Visual Studio 2022）
 
 ```bat
 cd c && build-c.bat
 ```
 
-或手动：
+**Android 版**（需要 Android SDK + JDK）
 
-```bat
-rc /fo ncm2mp3_gui.res ncm2mp3_gui.rc
-cl /O2 /utf-8 ncm2mp3_gui.c ncm2mp3_gui.res bcrypt.lib comctl32.lib shell32.lib ole32.lib user32.lib gdi32.lib comdlg32.lib
+```powershell
+cd android
+powershell -File build_apk.ps1
 ```
 
 ## 常见问题
@@ -147,9 +178,13 @@ cl /O2 /utf-8 ncm2mp3_gui.c ncm2mp3_gui.res bcrypt.lib comctl32.lib shell32.lib 
 
 不能。`.ncm` 里装的是**音频**，不是视频。要视频得用 ffmpeg 把音频和封面合成。
 
+**手机上点扫描没反应**
+
+系统设置 → 应用 → NCM 转 MP3 → 权限 → 所有文件访问 → 允许。
+
 **会不会泄露账号**
 
-不会。全程本地解密，不联网、不上传。
+不会。三个版本都是本地解密，不联网、不上传。
 
 ## 免责声明
 
